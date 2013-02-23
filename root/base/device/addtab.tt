@@ -1,0 +1,37 @@
+[% IF c.user_exists -%]
+<script type="dojo/require">
+  Form: "dijit/form/Form",
+  TextBox: "dijit/form/TextBox",
+  CheckBox: "dijit/form/CheckBox",
+  Textarea: "dijit/form/Textarea",
+  Button: "dijit/form/Button"
+</script>
+<div data-dojo-type="Form" id="addtab" encType="multipart/form-data" action="" method="POST">
+  <table class="viewValues">
+    <tr>
+      <td class="vvLabel"><label for="area_host">[% c.loc('Area:') %]</label></td>
+[%   IF c.check_user_roles('add_area') -%]
+      <td class="vvValue"><input id="area_host" name="area_host" data-dojo-type="TextBox"[% IF c.session.current_area.defined; ' value="' _ c.session.current_area _ '"'; END %]></input></td>
+[%   ELSE -%]
+      <td class="vvValue"><input id="area_host" name="area_host" data-dojo-type="TextBox"[% IF c.session.current_area.defined; ' value="' _ c.session.current_area _ '"'; END %]></input></td>
+[%   END -%]
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="community">[% c.loc('Community:') %]</label></td>
+      <td class="vvValue"><input id="community" name="community" data-dojo-type="TextBox"></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="status_write_mode">[% c.loc('Write mode:') %]</label></td>
+      <td class="vvValue"><input id="status_write_mode" name="status_write_mode" data-dojo-type="CheckBox"></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="src_hosts">[% c.loc('Hosts:') %]</label></td>
+      <td class="vvValue"><textarea id="src_hosts" name="src_hosts" data-dojo-type="Textarea"></textarea></td>
+    </tr>
+    <tr>
+      <td class="vvLabel">&nbsp;</td>
+      <td class="vvValue"><button data-dojo-type="Button" type="submit" name="submitButton">[% c.loc('Add devices') %]</button></td>
+    </tr>
+  </table>
+</div>
+[% END -%]

@@ -1,0 +1,15 @@
+.TemporaryItems
+inc
+public_html
+.backup
+.contrib
+.git
+.sql
+META.*
+MYMETA.*
+Makefile
+observer.conf
+*.diff
+*.orig
+*.pid
+*.sql

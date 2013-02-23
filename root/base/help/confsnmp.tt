@@ -1,0 +1,41 @@
+<h3>Huawei Quidway S2000/S2300</h3>
+<pre>
+# snmp-agent community read &lt;secret&gt;
+# snmp-agent sys-info version v2c
+</pre>
+<hr/>
+<h3>D-Link DES-1228</h3>
+<pre>
+# delete snmp community public
+# delete snmp community private
+# create snmp community &lt;secret&gt; view CommunityView read_only
+</pre>
+<hr/>
+<h3>D-Link DES-3200-28F</h3>
+<pre>
+# delete snmp community public
+# delete snmp community private
+# create snmp community &lt;secret&gt; view CommunityView read_only
+# create snmp host &lt;area host ip&gt; v2c &lt;secret&gt;
+# enable snmp
+</pre>
+<hr/>
+<h3>Linksys SPS/SRW<br>Alcatel OmniStack LS 6200</h3>
+<pre>
+# snmp-server enable
+# snmp-server community &lt;secret&gt; ro
+</pre>
+<hr/>
+<h3>ZyXEL ES-2108-G</h3>
+<pre>
+# service-control snmp
+# snmp-server get-community &lt;secret1&gt;
+# snmp-server set-community &lt;secret2&gt;
+</pre>
+<hr/>
+<h3>Cisco Catalyst</h3>
+<pre>
+# snmp-server community &lt;secret&gt; RO &lt;acl num&gt;
+# access-list &lt;acl num&gt; permit &lt;area host ip&gt;
+</pre>
+<hr/>

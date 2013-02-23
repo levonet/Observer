@@ -1,0 +1,15 @@
+CVS
+.TemporaryItems
+inc
+public_html
+.backup
+.contrib
+.sql
+META.*
+MYMETA.*
+Makefile
+observer.conf
+*.diff
+*.orig
+*.pid
+*.sql

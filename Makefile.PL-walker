@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+# IMPORTANT: if you delete this file your app will not work as
+# expected.  You have been warned.
+use inc::Module::Install 1.02;
+
+name 'Walker';
+
+all_from 'lib/Observer/Walker.pm';
+test_requires 'Test::More' => '0.88';
+requires 'Moose';
+requires 'namespace::autoclean';
+requires 'Config::General';
+requires 'Config::JFDI';
+requires 'MooseX::NonMoose';
+requires 'MooseX::MarkAsMethods';
+requires 'DBIx::Class::Schema::Loader';
+requires 'DBD::mysql';
+requires 'DateTime::Format::MySQL';
+requires 'File::Basename';
+requires 'Sys::Syslog';
+requires 'Getopt::Long';
+requires 'Net::SNMP';
+
+auto_install;
+WriteAll;

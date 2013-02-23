@@ -1,0 +1,23 @@
+[% PROCESS templates/dojo.tt -%]
+[% MACRO auth_user BLOCK -%]
+[%   dojo_require("dijit/form/DropDownButton") -%]
+[%   dojo_require("dijit/DropDownMenu") -%]
+[%   dojo_require("dijit/MenuItem") -%]
+	<div data-dojo-type="dijit/form/DropDownButton">
+	  <span>[% c.user.username %]</span>
+	  <div data-dojo-type="dijit/DropDownMenu">
+	    <div data-dojo-type="dijit/MenuItem" data-dojo-props="iconClass:'icon16x16 icon16x16Exit'" onClick='location.href="[% c.uri_for_action('/auth/logout') %]"'>[% c.loc('Logoff') %]</div>
+	  </div>
+	</div>
+[% END -%]
+[% MACRO auth_login BLOCK -%]
+[%   connect_controller("login", "{urlAuth: '" _ c.uri_for_action('/auth/index') _ "'}") -%]
+[%   dojo_require("dijit/form/Form") -%]
+[%   dojo_require("dijit/form/ValidationTextBox") -%]
+[%   dojo_require("dijit/form/Button") -%]
+        <div data-dojo-type="dijit/form/Form" id="login" encType="multipart/form-data" action="" method="POST" focused="true">
+          <input data-dojo-type="dijit/form/ValidationTextBox" type="text" id="username" name="username" data-dojo-props="placeHolder: '[% c.loc("User name") %]'" required="true"><br/>
+          <input data-dojo-type="dijit/form/ValidationTextBox" type="password" id="password" name="password" data-dojo-props="placeHolder: '[% c.loc("Password") %]'" required="true"><br/>
+          <button data-dojo-type="dijit/form/Button" name="submit" type="submit">[% c.loc('Enter to the system') %]</button>
+        </div>
+[% END -%]

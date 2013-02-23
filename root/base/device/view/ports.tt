@@ -1,0 +1,51 @@
+[% IF c.user_exists -%]
+[%   ifAdminStatus = {
+        '1' = 'up'
+        '2' = 'down'
+        '3' = 'testing'
+    };
+    ifOperStatus = {
+        '1' = 'up'
+        '2' = 'down'
+        '3' = 'testing'
+        '4' = 'unknown'
+        '5' = 'dormant'
+        '6' = 'notPresent'
+        '7' = 'lowerLayerDown'
+    }; -%]
+<table class="viewPorts">
+  <thead>
+    <tr>
+      <td>[% c.loc('Port') %]</td>
+      <td>[% c.loc('Name') %]</td>
+      <td>[% c.loc('Status') %]</td>
+      <td>[% c.loc('Speed') %]</td>
+      <td><div id="vpMACsTitle[% dev_id %]" title="[% c.loc('MACs') %]">&nbsp;</div></td>
+    </tr>
+  </thead>
+  <tbody>
+[%   FOREACH port IN  dev_ports.all -%]
+    <tr>
+      <td><span title="[% port.if_index %]">[% port.port %]</span></td>
+      <td><span title="[% port.if_type %]">[% port.if_name %]</span></td>
+      <td><span class="AdminStatus [% ifAdminStatus.${port.get_column('IfAdminStatus')} %]" title="[% c.loc("Administrative port status") %]">[% ifAdminStatus.${port.get_column('IfAdminStatus')} %]</span
+          > <span class="OperStatus [% ifOperStatus.${port.get_column('IfOperStatus')} %]" title="[% c.loc("The current operational state of the interface") %]">[% ifOperStatus.${port.get_column('IfOperStatus')} %]</span
+          > [% SET monitoring = port.get_column('isMonitoring') ? 'view' : '' %]<span id="vpMonit" class="Monitoring [% monitoring %]" title="[% c.loc("Status of MACs monitoring in the port") %]">[% monitoring %]</span></td>
+      <td class="Speed"><span title="[% port.if_speed %]">
+[%-  SET ifspeed = port.if_speed -%]
+[%   IF ifspeed == 0; '&nbsp;' -%]
+[%   ELSIF ifspeed >= 1000000000 -%]
+[%     FILTER format(c.loc('%.1f Gb/s')); ifspeed / 1000000000; END -%]
+[%   ELSIF ifspeed >= 1000000 -%]
+[%     FILTER format(c.loc('%.1f Mb/s')); ifspeed / 1000000; END -%]
+[%   ELSIF ifspeed >= 1000 -%]
+[%     FILTER format(c.loc('%.1f Kb/s')); ifspeed / 1000; END -%]
+[%   ELSE -%]
+[%     ifspeed _ c.loc(' B/s') -%]
+[%   END -%]</span></td>
+      <td><div id="vpMACs[% dev_id %]_[% port.port %]">&nbsp;</div></td>
+    </tr>
+[%   END -%]
+  </tbody>
+</table>
+[% END -%]

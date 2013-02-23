@@ -1,0 +1,54 @@
+
+/* Statusbar section */
+span.statusInfo { color: black; }
+span.statusWarning { color: blue; }
+span.statusError { color: red; }
+
+
+/* Toolbar and button section */
+.icon24x24 {
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 24px;
+  height: 24px;
+}
+
+.icon24x24Add { background-image: url('/static/images/icons/24x24/Add.png'); }
+
+.icon16x16 {
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 16px;
+  height: 16px;
+}
+
+.icon16x16Add { background-image: url('/static/images/icons/16x16/create.png'); }
+.icon16x16Delete { background-image: url('/static/images/icons/16x16/delete.png'); }
+.icon16x16Filter { background-image: url('/static/images/icons/16x16/filter.png'); }
+.icon16x16Find { background-image: url('/static/images/icons/16x16/find.png'); }
+.icon16x16View { background-image: url('/static/images/icons/16x16/view.png'); }
+.icon16x16Edit { background-image: url('/static/images/icons/16x16/pencil.png'); }
+.icon16x16Refresh { background-image: url('/static/images/icons/16x16/sync.png'); }
+.icon16x16Report { background-image: url('/static/images/icons/16x16/report.png'); }
+.icon16x16Error { background-image: url('/static/images/icons/16x16/error.png'); }
+.icon16x16Exit { background-image: url('/static/images/icons/16x16/door_open.png'); }
+
+/* MVC section */
+.row { width: 600px; display: inline-block; margin: 4px; }
+.cellA { width: 30%; display: inline-block; text-align: right; }
+.cellV { width: 65%; display: inline-block; }
+.valId { width: 150px; }
+.valShort { width: 100px; }
+.valText { width: 400px; }
+#dialogEditContent {
+  overflow: auto;
+/*  width: 85%;
+  height: 100%; */
+/*  min-height: 150px; */
+}
+#dialogEdit {
+  overflow: auto;
+/*  position: 'relative'; */
+  width: 630px;
+/*  height: 90%; */
+}

@@ -1,0 +1,25 @@
+[% IF c.user_exists -%]
+[%   MACRO row(selector, label, value) BLOCK; -%]
+[%     SET id = selector _ dev_info.dev_id -%]
+  <tr>
+    <td class="vvLabel"><label for="[% id %]">[% label %]</label></td>
+    <td class="vvValue"><span id="[% id %]">[% value %]</span></td>
+  </tr>
+[%   END; -%]
+<table class="viewValues">
+[%   row('dev_id', c.loc('Id:'), dev_info.dev_id ) -%]
+[%   row('area_host', c.loc('Area:'), dev_info.area_host ) -%]
+[%   row('src_host', c.loc('Host:'), dev_info.src_host ) -%]
+[%   row('dev_name', c.loc('Brand:'), c.config.snmp_devices.${dev_info.dev_name}.name ) -%]
+[%   row('mac', c.loc('MAC:'), dev_info.mac ) -%]
+[%   row('last_upd', c.loc('Last update:'), dev_status.get_column('last_upd') ) -%]
+[%   IF dev_info.err_id -%]
+[%     row('error', c.loc('Last error:'), dev_error.message ) -%]
+[%   END -%]
+[%   SET status_val = [] -%]
+[%   FOREACH colname IN ['VIEW_LOCK', 'WALK_LOCK', 'WALK_INWORK', 'USER_NEWDEV', 'USER_UPDDEV', 'WRITE_MODE', 'WALK_ERR_LOCK', 'USER_ERR_LOCK', 'CONNECT_ERROR'] -%]
+[%     IF dev_status.get_column(colname); status_val.push(colname); END -%]
+[%   END -%]
+[%   row('status', c.loc('Status:'), '{ ' _ status_val.join(', ') _ ' }' ) -%]
+</table>
+[% END -%]

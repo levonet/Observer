@@ -1,0 +1,37 @@
+[% PROCESS templates/dojo.tt -%]
+[% IF c.user_exists -%]
+<script type="dojo/require">
+  TextBox: "dijit/form/TextBox",
+  CheckBox: "dijit/form/CheckBox",
+  Button: "dijit/form/Button",
+  BorderContainer: "dijit/layout/BorderContainer",
+  ContentPane: "dijit/layout/ContentPane",
+</script>
+<div data-dojo-type="BorderContainer" data-dojo-props="style:'height:400px; width:100%;', gutters:true, liveSplitters:false">
+  <div data-dojo-type="ContentPane" data-dojo-props="region:'top', splitter:false">
+    <table class="viewValues">
+      <tr>
+        <td class="vvLabel"><label for="findAreaHost">[% c.loc('Area:') %]</label></td>
+        <td class="vvValue"><input id="findAreaHost" name="findAreaHost" data-dojo-type="TextBox"[% IF c.session.current_area.defined; ' value="' _ c.session.current_area _ '"'; END %]></input></td>
+      </tr>
+      <tr>
+        <td class="vvLabel"><label for="findSrcHost">[% c.loc('Host:') %]</label></td>
+        <td class="vvValue"><input id="findSrcHost" name="findSrcHost" data-dojo-type="TextBox"></input></td>
+      </tr>
+      <tr>
+        <td class="vvLabel"><label for="findMAC">[% c.loc('MAC:') %]</label></td>
+        <td class="vvValue"><input id="findMAC" name="findMAC" data-dojo-type="TextBox"></input></td>
+      </tr>
+      <tr>
+        <td class="vvLabel">&nbsp;</td>
+        <td class="vvValue">
+          <button data-dojo-type="Button" type="button" name="dlgFindButton" id="dlgFindButton">[% c.loc('Search') %]</button>
+          <button data-dojo-type="Button" type="button" onClick="observer.device.findDialog().onCancel();">[% c.loc('Cancel') %]</button></td>
+      </tr>
+    </table>
+  </div>
+  <div data-dojo-type="ContentPane" data-dojo-props="region:'center', splitter:false">
+    <div id="findGrid"></div>
+  </div>
+</div>
+[% END -%]

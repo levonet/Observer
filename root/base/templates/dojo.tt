@@ -1,0 +1,28 @@
+[% UNLESS dojo.defined -%]
+[%   SET dojo.controllers = {} -%]
+[%   SET dojo.requires = [] -%]
+[%   SET dojo.baseUrl = 'http://ajax.googleapis.com/ajax/libs/dojo/1.8.3' -%]
+[%   SET dojo.theme='claro' -%]
+[% #
+   # Connect observer controller
+   #
+     MACRO connect_controller(controllerName, prop) SET dojo.controllers.$controllerName = prop -%]
+[% #
+   # Call function dojo.require()
+   #
+     MACRO dojo_require(moduleName) CALL dojo.requires.push(moduleName) -%]
+[% #
+   # Enumerates all dojo.requires in <script> block
+   #
+     MACRO dojo_requires_block BLOCK; -%]
+    <script type="text/javascript">
+    var observer;
+    require(["dojo/parser", "observer", [% FOREACH dojo_method IN dojo.requires.unique %]"[% dojo_method %]", [% END %]"dojo/domReady!"], function(parser, _observer){
+        parser.parse();
+        _observer.start({[% FOREACH c = dojo.controllers.keys; c _ ': ' _ dojo.controllers.$c _ ', '; END; %]});
+        observer = _observer;
+        window.observer = _observer;
+    });
+    </script>
+[%   END -%]
+[% END -%]

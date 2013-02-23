@@ -1,0 +1,10 @@
+[% IF c.user_exists -%]
+<ul class=navbar>
+[%   FOREACH list IN hosts.all -%]
+  <li id="hostItem[% list.dev_id %]" data-dojo-type="observer/HostItem"
+	data-dojo-props="host:'[% list.src_host %]',
+			status:'[% IF list.get_column('error'); 'error'; ELSIF list.get_column('process'); 'process'; ELSIF list.get_column('active'); 'active'; ELSE; 'unreachable'; END %]',
+			devId:[% list.dev_id %][% IF c.session.current_dev == list.dev_id; ', current:true'; END %][% IF c.session.selected_devs.exists(list.dev_id); ', selected:true'; END %]">[% list.src_host %]</li>
+[%   END -%]
+</ul>
+[% END -%]

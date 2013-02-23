@@ -1,0 +1,90 @@
+/* Wrapper section */
+
+html, body, #borderContainer {
+  height: 100%;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+#toolbar { margin: 0; padding: 0; }
+
+table.menuBar { width:100%; border: 0; margin: 0; padding: 0; }
+td.menuBarLtr { text-align: left; margin: 0; padding: 0; }
+td.menuBarRtl { text-align: right; margin: 0; padding: 0; }
+
+/* navbar section */
+
+ul.navbar {
+  line-height: 1.3em;
+  list-style-type: square;
+  margin: .3em 0 .4em .8em;
+  padding: 0;
+  list-style-image: url(/static/images/bullet.gif);
+}
+ul.navbar li { margin-bottom: 0; cursor: pointer; }
+ul.navbar li.selected { font-weight: bold; }
+ul.navbar li.current { background-color: gray; }
+
+ul.navbar li[title="active"] { list-style-image: url(/static/images/bullet_green.gif); }
+ul.navbar li[title="unreachable"] { list-style-image: url(/static/images/bullet.gif); }
+ul.navbar li[title="error"] { list-style-image: url(/static/images/bullet_red.gif); }
+ul.navbar li[title="process"] { list-style-image: url(/static/images/bullet_process.gif); }
+
+/* device/view section */
+
+table.viewValues { border: 0; }
+table.viewValues td.vvLabel { text-align: right; }
+table.viewValues label { font-weight: bold; }
+table.viewValues td.vvValue { text-align: left; }
+td.vvLabel span { font-weight: bold; }
+
+table.viewPorts { border: 0; margin: 0; padding: 0; }
+table.viewPorts thead { text-align: center; font-weight: bold; }
+table.viewPorts td { margin: 0; padding: 0; vertical-align: top; border-bottom: 1px solid gray; }
+table.viewPorts td.Speed { text-align: right; }
+table.viewPorts span.service { color: green; }
+table.viewPorts span.mac { color: gray; }
+table.viewPorts span.mac.online { color: green; }
+table.viewPorts span.AdminStatus {
+  height: 16px;
+  width: 16px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+table.viewPorts span.AdminStatus.up:before { content: url(/static/images/icons/16x16/switch_on.png); }
+table.viewPorts span.AdminStatus.down:before { content: url(/static/images/icons/16x16/switch_off.png); }
+table.viewPorts span.OperStatus {
+  height: 16px;
+  width: 19px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+table.viewPorts span.OperStatus.up:before { content: url(/static/images/icons/16x16/net_online_19x16.png); }
+table.viewPorts span.OperStatus.down:before { content: url(/static/images/icons/16x16/net_disabled_19x16.png); }
+table.viewPorts span.Monitoring {
+  height: 16px;
+  width: 16px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+table.viewPorts span.Monitoring:before { content: url(/static/images/icons/16x16/eye_disabled.png); }
+table.viewPorts span.Monitoring.view:before { content: url(/static/images/icons/16x16/eye.png); }
+
+table.viewLogs { border: 0; margin: 0; padding: 0; }
+table.viewLogs thead { text-align: center; font-weight: bold; }
+table.viewLogs td { margin: .3em; padding: .3em; vertical-align: top; border-bottom: 1px solid gray; }

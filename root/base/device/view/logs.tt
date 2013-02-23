@@ -1,0 +1,16 @@
+[% IF c.user_exists -%]
+<table class="viewLogs">
+  <thead>
+    <tr>
+      <td>[% c.loc('Date') %]</td>
+      <td>[% c.loc('Message') %]</td>
+    </tr>
+  </thead>
+[%   FOREACH log IN dev_errors.all -%]
+    <tr>
+      <td><span title="[% log.err_id %]">[% log.ev_time %]</span></td>
+      <td><span>[% log.message %]</span></td>
+    </tr>
+[%   END -%]
+</table>
+[% END -%]

@@ -1,0 +1,16 @@
+[% PROCESS auth.tt -%]
+	<table class="menuBar">
+	  <tr>
+	    <td class="menuBarLtr">
+	      <span id="toolbar"></span>
+	    </td>
+[% IF c.user_exists -%]
+	    <td class="menuBarRtl" width="5%">
+[%   auth_user -%]
+[% ELSE -%]
+	    <td class="menuBarLtr" width="5%">
+[%   auth_login -%]
+[% END -%]
+	    </td>
+	  </tr>
+	</table>

@@ -1,0 +1,5 @@
+CVS
+*.diff
+*.orig
+update_db.sh
+snmptest.pl

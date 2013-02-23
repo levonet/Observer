@@ -1,0 +1,66 @@
+[% IF c.user_exists AND c.check_user_roles('edit') -%]
+[%   MACRO switch(selector, label, value) BLOCK; -%]
+[%     SET id = selector _ '_' _ dev_info.dev_id -%]
+    <tr>
+      <td class="vvLabel"><span>[% label %]</span></td>
+      <td class="vvValue"><input id="[% id %]" name="[% selector %]" data-dojo-type="CheckBox"[% IF value; ' checked'; END %]></input></td>
+    </tr>
+[%   END; -%]
+<script type="dojo/require">
+  Form: "dijit/form/Form",
+  TextBox: "dijit/form/TextBox",
+  CheckBox: "dijit/form/CheckBox",
+  Button: "dijit/form/Button",
+</script>
+<div data-dojo-type="Form" id="formStatus[% dev_info.dev_id %]" encType="multipart/form-data" action="" method="POST">
+  <table class="viewValues">
+[%   switch('VIEW_LOCK', c.loc('User lock:'), dev_status.get_column('VIEW_LOCK') ) -%]
+[%   switch('WALK_LOCK', c.loc('Walker lock:'), dev_status.get_column('WALK_LOCK') ) -%]
+[%   switch('WALK_INWORK', c.loc('Walker "in work" lock:'), dev_status.get_column('WALK_INWORK') ) -%]
+[%   switch('USER_NEWDEV', c.loc('Request for create:'), dev_status.get_column('USER_NEWDEV') ) -%]
+[% #  switch('USER_UPDDEV', c.loc('Request for update:'), dev_status.get_column('USER_UPDDEV') ) -%]
+[% #  switch('WALK_ERR_LOCK', c.loc('Walker error lock:'), dev_status.get_column('WALK_ERR_LOCK') ) -%]
+[% #  switch('USER_ERR_LOCK', c.loc('User error lock:'), dev_status.get_column('USER_ERR_LOCK') ) -%]
+    <tr>
+      <td class="vvLabel">&nbsp;</td>
+      <td class="vvValue"><button data-dojo-type="Button" type="submit" name="submitButton">[% c.loc('Update') %]</button></td>
+    </tr>
+  </table>
+</div>
+<hr/>
+<div data-dojo-type="Form" id="formEdit[% dev_info.dev_id %]" encType="multipart/form-data" action="" method="POST">
+  <table class="viewValues">
+    <tr>
+      <td class="vvLabel"><label for="area_host">[% c.loc('Area:') %]</label></td>
+      <td class="vvValue"><input id="area_host" name="area_host" data-dojo-type="TextBox" value="[% dev_info.area_host %]"></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="community">[% c.loc('Community:') %]</label></td>
+      <td class="vvValue"><input id="community" name="community" data-dojo-type="TextBox"></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="status_write_mode">[% c.loc('Write mode:') %]</label></td>
+      <td class="vvValue"><input id="status_write_mode" name="status_write_mode" data-dojo-type="CheckBox"[% IF dev_status.get_column('WRITE_MODE'); ' checked'; END %]></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel"><label for="src_host">[% c.loc('Host:') %]</label></td>
+      <td class="vvValue"><input id="src_host" name="src_host" data-dojo-type="TextBox" value="[% dev_info.src_host %]"></input></td>
+    </tr>
+    <tr>
+      <td class="vvLabel">&nbsp;</td>
+      <td class="vvValue"><button data-dojo-type="Button" type="submit" name="submitButton">[% c.loc('Update') %]</button></td>
+    </tr>
+  </table>
+</div>
+[%   IF c.check_user_roles('delete') -%]
+<hr/>
+<div data-dojo-type="Form" id="formDelete[% dev_info.dev_id %]" encType="multipart/form-data" action="" method="POST">
+  <table class="viewValues">
+    <tr>
+      <td class="vvLabel"><span>[% c.loc('Delete device from database:') %]</span></td>
+      <td class="vvValue"><button data-dojo-type="Button" type="submit" name="submitButton">[% c.loc('Delete') %]</button></td>
+    </tr>
+  </table>
+</div>
+[%   END =%]
+[% END -%]

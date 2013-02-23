@@ -1,0 +1,187 @@
+################################################################################
+# General settings
+#
+name Observer
+
+<Model::DB>
+    <connect_info>
+        dsn             dbi:mysql:observer;host=observer-db.domain
+        user            *****
+        password        *****
+        <options>
+            quote_names         0
+            preserve_case       1
+            mysql_enable_utf8   1
+        </options>
+    </connect_info>
+</Model::DB>
+
+################################################################################
+# Webserver settings
+#
+
+<authentication>
+    default_realm       members
+    <realms>
+        <members>
+            <credential>
+                class           Authen::Simple
+                <authen>
+#                    class       SSH
+#                    <args>
+#                        host    localhost
+#                    </args>
+                    class       Passwd
+                    <args>
+                        path    /etc/shadow
+                    </args>
+                </authen>
+            </credential>
+            <store>
+                class   Minimal
+                <users>
+#                    <iivanov>
+#                        username        Ivanov Ivan
+#
+#                        roles           all_areas
+# or                     area            somearea-1.domain
+#                        area            somearea-2.domain
+#                        area            somearea-3.domain
+#
+#                        roles           add_area
+#                        roles           edit
+#                        roles           delete
+#                    </iivanov>
+#                    <anotheruser>
+#                        ...
+#                    </anotheruser>
+                </users>
+            </store>
+        </members>
+    </realms>
+</authentication>
+
+<session>
+    expires 604800
+    cache_size 15m
+    verify_address 0
+</session>
+
+################################################################################
+# Walker settings
+#
+
+area_host somearea-1.domain
+
+idle_timeout            20
+request_timeout         1 hour
+update_device_timeout   25 minute
+
+max_mac_to_port         4
+
+<max_task_repeat>
+    usertask            30
+    walkdevice          10
+    findservice         100
+    error               0
+</max_task_repeat>
+
+<snmp_devices>
+    <Huawei_S2000>
+        name            Quidway S2000 Series
+        match_exp       S2403TP
+        algorithm       Q-BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </Huawei_S2000>
+    <Huawei_S2300>
+        name            Quidway S2300 Series
+        match_exp       S2309TP
+        match_exp       S2318TP
+        match_exp       S2326TP
+        match_exp       S2352P-EI
+        algorithm       BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </Huawei_S2300>
+    <DLink_DES1228ME>
+        name            D-Link DES-1228/ME
+        match_exp       DES-1228/ME
+        algorithm       Q-BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </DLink_DES1228ME>
+    <DLink_DES3000>
+        name            D-Link DES-3000
+        match_exp       DES-3010G
+        algorithm       BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </DLink_DES3000>
+    <DLink_DES3200>
+        name            D-Link DES-3200
+        match_exp       DES-3200-28F
+        algorithm       Q-BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </DLink_DES3200>
+    <DLink_DES3500>
+        name            D-Link DES-3500
+        match_exp       DES-3526
+        algorithm       Q-BRIDGE
+        ianaiftype      ethernetCsmacd
+        ianaiftype      gigabitEthernet
+    </DLink_DES3500>
+    <Linksys_SPS>
+        name            Linksys SPS/SRW Series
+        match_exp       SPS208G
+        match_exp       SPS224G4
+        match_exp       SPS2024
+        match_exp       SRW2048
+        match_exp       SRW2024
+        match_exp       SRW2016
+        match_exp       SRW248G4
+        match_exp       SRW224G4
+        algorithm       Q-BRIDGE
+        ianaiftype      ethernetCsmacd
+    </Linksys_SPS>
+    <Cisco_Catalyst_L2>
+        name            Cisco Catalyst 2900 Series
+        match_exp       C2960
+        match_exp       C2950
+        match_exp       C2940
+        algorithm       BRIDGE-COMM
+        ianaiftype      ethernetCsmacd
+    </Cisco_Catalyst_L2>
+    <Cisco_Catalyst_L3>
+        name            Cisco Catalyst 3500/3750 Series
+        match_exp       C3750
+        match_exp       C3560
+        match_exp       C3550
+        algorithm       BRIDGE-COMM
+        ianaiftype      ethernetCsmacd
+    </Cisco_Catalyst_L3>
+    <Alcatel_OS_LS_6200>
+        name            Alcatel OmniStack LS 6200
+        match_exp       OmniStack LS 6200
+        algorithm       BRIDGE
+        ianaiftype      ethernetCsmacd
+    </Alcatel_OS_LS_6200>
+    <ZyXEL_ES2108>
+        name            ZyXEL ES-2108 Series
+        match_exp       ES-2108-G
+        algorithm       BRIDGE
+        ianaiftype      ethernetCsmacd
+    </ZyXEL_ES2108>
+    <ZyXEL_DSLAM>
+        name            Zixel DSLAM
+        match_exp       IES-5000
+        match_exp       MSC 1000
+        match_exp       IES-1248-51V
+        match_exp       IES1248-51
+        match_exp       IES-1000 AAM1008-61
+        match_exp       AAM1212-51 / IES-612
+        algorithm       Q-BRIDGE-IF
+        ianaiftype      adsl
+    </ZyXEL_DSLAM>
+</snmp_devices>

@@ -1,0 +1,10 @@
+[% IF c.user_exists -%]
+[%   MACRO nav_selector(s) IF c.session.current_area == s; ' selected="true"'; END; -%]
+<div data-dojo-type="dijit/layout/AccordionContainer" id="acDevices" style="height: 100%;">
+[%   FOREACH list IN areas.all -%]
+  <div data-dojo-type="dijit/layout/ContentPane" title="[% list.area_host %]"[% nav_selector(list.area_host) %] refreshOnShow="true"
+      href="[% c.uri_for_action('/device/navbar/hosts', [ list.area_host ]) %]" preventCache="true" style="overflow:auto;">
+  </div>
+[%   END -%]
+</div>
+[% END -%]
