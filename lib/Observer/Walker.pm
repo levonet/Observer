@@ -146,7 +146,7 @@ sub do_walk {
     # сначала выполняем высокоприоритетные (пользовательские операции)
     #
     $row = $self->schema->resultset('Device')->find_usertask($self->config->{'area_host'});
-    if (defined $row) {
+    if ($row) {
         $self->status_clear;
         $self->status_set( WALK_INWORK => 0, CONNECT_ERROR => 0 );
         $self->error_clean($row);
@@ -224,7 +224,7 @@ sub do_walk {
     # Обновление статуса портов, сбор MAC-адресов
     #
     $row = $self->schema->resultset('Device')->find_walkdev($self->config->{'area_host'}, $self->config->{'update_device_timeout'});
-    if (defined $row) {
+    if ($row) {
         $self->status_clear;
         $self->status_set( WALK_INWORK => 0, CONNECT_ERROR => 0 );
         $self->error_clean($row);
@@ -280,7 +280,7 @@ sub do_walk {
     # Снимаем блокировки по таймауту в случае аварий завершения демона
     #
     $row = $self->schema->resultset('Device')->find_zombie($self->config->{'area_host'}, $self->config->{'request_timeout'});
-    if (defined $row) {
+    if ($row) {
         $self->status_clear;
         $self->status_set( WALK_INWORK => 0, CONNECT_ERROR => 0 );
 
