@@ -187,10 +187,10 @@ sub loop {
 
     until ($quit_loop) {
         eval {
-        sleep $config->{'idle_timeout'}
-            if $walker->do_walk;
+            sleep $config->{'idle_timeout'}
+                if $walker->do_walk;
         };
-        syslog('warn', "Monitoring aborted by error: $@")
+        syslog('warning', "Process $loopid aborted by error: $@")
             if $@;
     }
     $walker->close;
