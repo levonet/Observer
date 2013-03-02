@@ -169,7 +169,7 @@ sub loop {
     my $quit_loop = 0;
     my $i = 0;
 
-    local $SIG{TERM} = sub {}; # Some system not support "IGNORE"
+    local $SIG{TERM} = sub {}; # Some systems not support "IGNORE"
     local $SIG{INT} = $SIG{USR1} = sub { $quit_loop = 1; };
 
     my $schema = Observer::Schema->connect( $config->{'Model::DB'}->{connect_info} );
@@ -190,11 +190,15 @@ sub loop {
             sleep $config->{'idle_timeout'}
                 if $walker->do_walk;
         };
-        syslog('warning', "Process $loopid aborted by error: $@")
-            if $@;
+        if ($@) {
+            #FIXIT: for production
+            # syslog('warning', 'Process %d aborted by error: %m', $loopid);
+            syslog('warning', "Process $loopid aborted by error: $@");
+            sleep $config->{'idle_timeout'}
+                unless $quit_loop;
+        }
     }
     $walker->close;
-    $schema->disconnect;
 
     syslog('info', "Done process $loopid");
 }
