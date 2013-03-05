@@ -116,8 +116,9 @@ define(["dojo/_base/declare",
 							observer.device.trapViewMACs();
 						}
 						topic.publish("device/viewmac", val);
+						observer.setSettings({'device/viewmac': val});
 					},
-					checked: false,
+					checked: observer.settings.get('device/viewmac', false),
 				}));
 			});
 		},
@@ -233,13 +234,16 @@ console.log("Device.trapSelectHost(new) = "+devId);
 								var grid = new DataGrid({
 									store: findDataStore = new ObjectStore({ objectStore: findStore }),
 									structure: [
-										//{ field: "AreaHost", name: loc("Area"), width: '12em' },
 										{ field: "SrcHost", name: loc("Host"), width: '12em' },
 										{ field: "IfStatus", name: loc("Status"), width: '4em' },
-										{ field: "IfName", name: loc("Port"), width: '7em' },
+										{ field: "IfName", name: loc("Port"), width: '9em' },
 										{ field: "MAC", name: loc("MAC"), width: '8em' },
 										{ field: "Service", name: loc("Service"), width: '6em' },
-										{ field: "UpdTime", name: loc("Last"), width: '14em' },
+										{ field: "UpdTime", name: loc("Last"), width: '14em',
+											formatter: function(updTime) {
+												return updTime.replace(/^\'(.*)T(.*)\'$/, "$1 $2"); // '
+											}
+										},
 									],
 									onDblClick: function(e) {
 										var items = registry.byId("findGrid").selection.getSelected();

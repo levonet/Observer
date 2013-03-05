@@ -4,7 +4,8 @@
   TextBox: "dijit/form/TextBox",
   CheckBox: "dijit/form/CheckBox",
   Textarea: "dijit/form/Textarea",
-  Button: "dijit/form/Button"
+  Button: "dijit/form/Button",
+  Tooltip: "dijit/Tooltip",
 </script>
 <div data-dojo-type="Form" id="addtab" encType="multipart/form-data" action="" method="POST">
   <table class="viewValues">
@@ -26,7 +27,10 @@
     </tr>
     <tr>
       <td class="vvLabel"><label for="src_hosts">[% c.loc('Hosts:') %]</label></td>
-      <td class="vvValue"><textarea id="src_hosts" name="src_hosts" data-dojo-type="Textarea"></textarea></td>
+      <td class="vvValue">
+        <textarea id="src_hosts" name="src_hosts" data-dojo-type="Textarea"></textarea>
+        <div class="dijitHidden"><span data-dojo-type="Tooltip" data-dojo-props="connectId:'src_hosts', position:['after']">[% c.loc('Separating hosts in a list with commas or space.') %]</span></div>
+      </td>
     </tr>
     <tr>
       <td class="vvLabel">&nbsp;</td>

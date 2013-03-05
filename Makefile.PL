@@ -23,6 +23,10 @@ requires 'DateTime::Format::MySQL';
 requires 'FCGI';
 requires 'FCGI::ProcManager';
 
+requires 'JSON';
+requires 'MRO::Compat';
+requires 'Carp';
+
 # For devel
 #requires 'Locale::PO';
 #requires 'IO::All';

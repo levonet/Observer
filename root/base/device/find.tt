@@ -4,6 +4,7 @@
   TextBox: "dijit/form/TextBox",
   CheckBox: "dijit/form/CheckBox",
   Button: "dijit/form/Button",
+  Tooltip: "dijit/Tooltip",
   BorderContainer: "dijit/layout/BorderContainer",
   ContentPane: "dijit/layout/ContentPane",
 </script>
@@ -16,11 +17,17 @@
       </tr>
       <tr>
         <td class="vvLabel"><label for="findSrcHost">[% c.loc('Host:') %]</label></td>
-        <td class="vvValue"><input id="findSrcHost" name="findSrcHost" data-dojo-type="TextBox"></input></td>
+        <td class="vvValue">
+          <input id="findSrcHost" name="findSrcHost" data-dojo-type="TextBox"></input>
+          <div class="dijitHidden"><span data-dojo-type="Tooltip" data-dojo-props="connectId:'findSrcHost', position:['after']">[% c.loc('Use <strong>Regular Expressions</strong>') %]</span></div>
+        </td>
       </tr>
       <tr>
         <td class="vvLabel"><label for="findMAC">[% c.loc('MAC:') %]</label></td>
-        <td class="vvValue"><input id="findMAC" name="findMAC" data-dojo-type="TextBox"></input></td>
+        <td class="vvValue">
+          <input id="findMAC" name="findMAC" data-dojo-type="TextBox"></input>
+          <div class="dijitHidden"><span data-dojo-type="Tooltip" data-dojo-props="connectId:'findMAC', position:['after']">[% c.loc('Use <strong>Regular Expressions</strong>') %]</span></div>
+        </td>
       </tr>
       <tr>
         <td class="vvLabel">&nbsp;</td>

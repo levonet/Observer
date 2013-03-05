@@ -21,6 +21,38 @@ Catalyst Controller.
 
 =cut
 
+sub settings : Local : ActionClass('REST') { }
+
+#sub settings_GET {
+#    my ( $self, $c ) = @_;
+#
+#    my %result;
+#    foreach (keys %{$c->req->params}) {
+#        $c->log->debug('PARAM: '.$_.' => '.$c->req->param($_));
+#        $result{$_} = exists $c->session->{$_} ? $c->session->{$_} : $c->req->param($_);
+#    }
+#    $self->status_ok( $c, entity => { %result } );
+#}
+
+sub settings_POST {
+    my ( $self, $c ) = @_;
+
+    $c->settings($c->req->data);
+
+    $self->status_ok( $c, entity => { status => 'set' } );
+}
+
+sub settings_DELETE {
+    my ( $self, $c ) = @_;
+
+    foreach (keys %{$c->req->params}) {
+        $c->log->debug('PARAM: '.$_.' => '.$c->req->param($_));
+        #delete $c->session->{$_};
+    }
+    #$self->status_not_found( $c, message => $c->loc("Cannot find") );
+    $self->status_accepted( $c, entity => { status => 'del' } );
+}
+
 sub areas : Local : ActionClass('REST') { }
 
 sub areas_GET {
