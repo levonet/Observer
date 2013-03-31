@@ -1,6 +1,6 @@
 [% PROCESS templates/dojo.tt -%]
 [% SET device_rules = [] -%]
-[% IF c.check_user_roles('edit'); device_rules.push("rule_edit: true"); END; -%]
+[% IF c.check_user_roles('edit'); device_rules.push("role_edit: true"); END; -%]
 [% connect_controller("device", "{urlDevView: '" _ c.uri_for_action('/device/view/root', [ '_DEVID_' ]) _ "',"
                             _ "urlViewMACs: '" _ c.uri_for_action('/device/rest/macs_id', [ '_DEVID_' ]) _ "',"
                             _ "urlFindDialog: '" _ c.uri_for_action('/device/find') _ "',"

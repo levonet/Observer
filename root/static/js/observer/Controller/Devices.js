@@ -15,7 +15,7 @@ define(["dojo/_base/declare",
 		urlDevStatus: "",
 		urlHostItem: "",
 
-		rule_edit: false,
+		role_edit: false,
 
 		// Текущее устройство
 		currentDevId: -1,
@@ -91,19 +91,21 @@ define(["dojo/_base/declare",
 						topic.publish("device/find");
 					},
 				}));
-				toolbar.addChild(new Button({
-					id:	   "tbAddDevices",
-					iconClass: "icon16x16 icon16x16Add",
-					showLabel: true,
-					label:	   loc("Add"),
-					onClick:   function () {
-						console.log("tbAddDevices.onClick()");
-						if (!observer.device._handlerDeviceAddTab) {
-							observer.device.trapDeviceAddTab();
-						}
-						topic.publish("device/add");
-					},
-				}));
+				if (observer.device.role_edit) {
+					toolbar.addChild(new Button({
+						id:	   "tbAddDevices",
+						iconClass: "icon16x16 icon16x16Add",
+						showLabel: true,
+						label:	   loc("Add"),
+						onClick:   function () {
+							console.log("tbAddDevices.onClick()");
+							if (!observer.device._handlerDeviceAddTab) {
+								observer.device.trapDeviceAddTab();
+							}
+							topic.publish("device/add");
+						},
+					}));
+				}
 				toolbar.addChild(new ToolbarSeparator({}));
 				toolbar.addChild(new ToggleButton({
 					id:	   "tbViewMACs",
@@ -280,7 +282,7 @@ console.log("Device.trapSelectHost(new) = "+devId);
 				console.log("Device.openDeviceAddTab()");
 
 				// Rules
-				if (!observer.device.rule_edit) {
+				if (!observer.device.role_edit) {
 					return;
 				}
 

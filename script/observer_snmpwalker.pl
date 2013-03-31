@@ -21,6 +21,7 @@ use Observer::Walker;
 
 my ($help, $version, $foreground);
 my $pidfile     = '/var/run/observer_snmpwalker.pid';
+my $loop_method = 'auto';
 my $loops       = 1;
 
 GetOptions(
@@ -28,6 +29,7 @@ GetOptions(
     'version|v'         => \$version,
     'foreground|f'      => \$foreground,
     'pidfile|p:s'       => \$pidfile,
+    'loop_method|m:s'   => \$loop_method,
     'loops|l:i'         => \$loops,
 );
 
@@ -39,6 +41,8 @@ Usage:  observer_snmpwalker.pl [OPTIONS]
   -f, --foreground   Force snmpwalker to run as a foreground process.
   -p, --pidfile file Specifies the file to write the process ID to
                      (default is /var/run/observer_snmpwalker.pid).
+  -m, --loop_method  You can change the process method between fork and
+                     thread. (default auto) Ignored if foreground.
   -l, --loops num    Number of parallel executed events (default is 1).
   -v, --version      Print version.
   -h, --help         Display this usage message.
@@ -49,6 +53,11 @@ EOF
 
 if ($version) {
     print "observer_snmpwalker.pl version ".$Observer::Walker::VERSION."\n";
+    exit;
+}
+
+unless ( $loop_method =~ m/^(auto|fork|thread)$/i ) {
+    print "Wrong process method '$loop_method'!\nUse with option -m fork or thread\n";
     exit;
 }
 
@@ -84,7 +93,10 @@ unless ($foreground) {
 my $jfdi = Config::JFDI->new(name => "Observer");
 my $config = $jfdi->get;
 
-my $can_use_threads = eval 'use threads; 1';
+my $can_use_threads = 0;
+if ( $loop_method =~ m/^(auto|thread)$/i ) {
+    $can_use_threads = eval 'use threads; 1';
+}
 
 do {
     my @threads;
@@ -191,8 +203,7 @@ sub loop {
                 if $walker->do_walk;
         };
         if ($@) {
-            #FIXIT: for production
-            # syslog('warning', 'Process %d aborted by error: %m', $loopid);
+            $@ =~ s/(line\s\d+(.*?)\.).*$/$1/g;
             syslog('warning', "Process $loopid aborted by error: $@");
             sleep $config->{'idle_timeout'}
                 unless $quit_loop;

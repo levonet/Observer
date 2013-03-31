@@ -17,6 +17,7 @@ has _settings_keylist => (
     default => sub {[
         'device/area',
         'device/viewmac',
+        'test/bool',
     ]},
 );
 

@@ -357,7 +357,7 @@ sub newdevice {
     }
 
     # Получаем MAC-адреса устройства
-    my $macs = $self->snmp->macs($row->dev_name);
+    my $macs = $self->snmp->macs($row->dev_name, $ports);
     unless (defined $macs) {
         $self->status_set(WALK_LOCK => 1);         # только в случае newdev
         $self->error($row, $self->snmp->error);
@@ -367,14 +367,10 @@ sub newdevice {
     # Добавляем в БД маки
     foreach my $row_port ($row->ports->all) {
 
-        my $port = ($self->config->{snmp_devices}->{$row->dev_name}->{algorithm} eq 'Q-BRIDGE-IF' ||
-                    $self->config->{snmp_devices}->{$row->dev_name}->{algorithm} eq 'BRIDGE')
-                ? $row_port->if_index : $row_port->port;
-
         # Помечаем порт как не мониторящийся если MACs >= max_mac_to_port
         if ( exists $self->config->{max_mac_to_port} &&
                 $self->config->{max_mac_to_port} > 0 &&
-                ($#{$macs->{$port}}+1) > $self->config->{max_mac_to_port} ) {
+                ($#{$macs->{$row_port->port}}+1) > $self->config->{max_mac_to_port} ) {
 
             $row_port->update({
                 IfStatus => $row_port->status_mask({NOT_MONITORING => 1}),
@@ -384,7 +380,7 @@ sub newdevice {
 
             # Иначе добавляем маки (чистим от повторений)
             my %tmp;
-            foreach (grep{!$tmp{$_}++} @{$macs->{$port}}) {
+            foreach (grep{!$tmp{$_}++} @{$macs->{$row_port->port}}) {
                 $self->schema->resultset('Macaddress')->create({
                     DevId       => $row->id,
                     Port        => $row_port->port,
@@ -434,7 +430,7 @@ sub walkdevice {
     }
 
     # Получаем MAC-адреса устройства
-    my $macs = $self->snmp->macs($row->dev_name);
+    my $macs = $self->snmp->macs($row->dev_name, $ports);
     unless (defined $macs) {
         $self->error($row, $self->snmp->error);
         return;
@@ -475,14 +471,10 @@ sub walkdevice {
         if ($row_port->oper_status eq 'up' &&
             $row_port->is_monitoring) {
 
-            my $port = ($self->config->{snmp_devices}->{$row->dev_name}->{algorithm} eq 'Q-BRIDGE-IF' ||
-                        $self->config->{snmp_devices}->{$row->dev_name}->{algorithm} eq 'BRIDGE')
-                            ? $row_port->if_index : $row_port->port;
-
             # Помечаем порт как не мониторящийся если MACs >= max_mac_to_port
             if ( exists $self->config->{max_mac_to_port} &&
                 $self->config->{max_mac_to_port} > 0 &&
-                ($#{$macs->{$port}}+1) > $self->config->{max_mac_to_port} ) {
+                ($#{$macs->{$row_port->port}}+1) > $self->config->{max_mac_to_port} ) {
 
                 $row_port->update({
                     IfStatus => $row_port->status_mask({NOT_MONITORING => 1}),
@@ -491,7 +483,7 @@ sub walkdevice {
 
             } else {
 
-                foreach (@{$macs->{$port}}) {
+                foreach (@{$macs->{$row_port->port}}) {
 
                     unless (my $row_mac = $row_port->macaddresses->search({MAC => $_})->single) {
 

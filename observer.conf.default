@@ -77,7 +77,10 @@ idle_timeout            20
 request_timeout         1 hour
 update_device_timeout   25 minute
 
-max_mac_to_port         4
+# Collect MACs on the port if MACs <= max_mac_to_port. Else port will be
+# blocked for MAC monitoring. If max_mac_to_port eq 0 or disabled, program
+# collecting MACs on all ports where ports not bloking manualy.
+#max_mac_to_port         4
 
 <max_task_repeat>
     usertask            30
@@ -173,15 +176,26 @@ max_mac_to_port         4
         algorithm       BRIDGE
         ianaiftype      ethernetCsmacd
     </ZyXEL_ES2108>
-    <ZyXEL_DSLAM>
-        name            Zixel DSLAM
-        match_exp       IES-5000
+    <ZyXEL_DSLAM_IES1000>
+        name            Zixel DSLAM IES-1000 Series
         match_exp       MSC 1000
+        match_exp       IES-1000 AAM1008-61
+        algorithm       Q-BRIDGE
+        algorithm_use   dot1dBasePortIfIndex
+        ianaiftype      adsl
+    </ZyXEL_DSLAM_IES1000>
+    <ZyXEL_DSLAM_IES1200>
+        name            Zixel DSLAM IES-1200 Series
         match_exp       IES-1248-51V
         match_exp       IES1248-51
-        match_exp       IES-1000 AAM1008-61
         match_exp       AAM1212-51 / IES-612
-        algorithm       Q-BRIDGE-IF
+        algorithm       Q-BRIDGE
         ianaiftype      adsl
-    </ZyXEL_DSLAM>
+    </ZyXEL_DSLAM_IES1200>
+    <ZyXEL_DSLAM_IES5000>
+        name            Zixel DSLAM IES-5000
+        match_exp       IES-5000
+        algorithm       BRIDGE
+        ianaiftype      adsl
+    </ZyXEL_DSLAM_IES5000>
 </snmp_devices>

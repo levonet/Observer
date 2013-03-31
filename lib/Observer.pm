@@ -78,12 +78,27 @@ sub enc {
     return $str;
 }
 
+#TODO: вынести в отдельный модуль Staff
 sub in_array {
-    my ( $self, $tmpArr, $search) = @_;
+    my ( $self, $tmpArr, $search ) = @_;
 
     return 0 unless ref($tmpArr) eq 'ARRAY';
     return scalar(grep { $_ eq $search } @{$tmpArr});
 }
+
+sub check_value {
+    my ( $self, $source, $search ) = @_;
+
+    if (defined $source) {
+        if (ref $source) {
+            return 1 if $self->in_array($source, $search);
+        } else {
+            return 1 if $source eq $search;
+        }
+    }
+    return 0;
+}
+#TODO: end
 
 sub check_area_role {
     my ( $self, $area ) = @_;

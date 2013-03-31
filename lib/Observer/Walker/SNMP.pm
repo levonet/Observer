@@ -38,11 +38,45 @@ my %IANAifType = (
     'adsl2'             => 230,
 );
 
+=head1 NAME
+
+Observer::Walker::SNMP - SNMP Driver for control network devices
+
+=head1 DESCRIPTION
+
+SNMP Driver.
+
+=cut
 
 has config      => ( is => 'ro' );
 has session     => ( is => 'rw' );
 has error       => ( is => 'rw' );
 has hostname    => ( is => 'rw' );
+
+=head1 METHODS
+
+=cut
+
+#TODO: вынести в отдельный модуль Staff
+sub in_array {
+    my ( $self, $tmpArr, $search ) = @_;
+
+    return 0 unless ref($tmpArr) eq 'ARRAY';
+    return scalar(grep { $_ eq $search } @{$tmpArr});
+}
+sub check_value {
+    my ( $self, $source, $search ) = @_;
+
+    if (defined $source) {
+        if (ref $source) {
+            return 1 if $self->in_array($source, $search);
+        } else {
+            return 1 if $source eq $search;
+        }
+    }
+    return 0;
+}
+#TODO: end
 
 sub connect {
     my ( $self, $snmp_args ) = @_;
@@ -104,6 +138,7 @@ sub device_name {
 
     my $desc = $result->{$oids{'SNMPv2-MIB::sysDescr.0'}};
     foreach my $dname (keys %{$self->config->{snmp_devices}}) {
+        next unless exists $self->config->{snmp_devices}->{$dname}->{match_exp};
         if (ref $self->config->{snmp_devices}->{$dname}->{match_exp}) {
             foreach (@{$self->config->{snmp_devices}->{$dname}->{match_exp}}) {
                 if ( $desc =~ m|$_|m ) {
@@ -263,42 +298,73 @@ sub ports_dynamic_status {
     return 1;
 }
 
+=head2 macs()
+Return hash of Port => [ MACs ]
+=cut
 sub macs {
-    my ( $self, $dev_name ) = @_;
+    my ( $self, $dev_name, $ports ) = @_;
 
     my $result;
     my $macs = {};
+    my $config_dev = $self->config->{snmp_devices}->{$dev_name};
+    my %baseport_index;
+    my %port_index;
 
     $self->error(undef);
 
-    if ($self->config->{snmp_devices}->{$dev_name}->{algorithm} eq 'Q-BRIDGE' ||
-        $self->config->{snmp_devices}->{$dev_name}->{algorithm} eq 'Q-BRIDGE-IF' ) {
-
-        $result = $self->session->get_table($oids{'Q-BRIDGE::dot1qTpFdbPort'});
+    # Таблица приведения базовых портов к индексам
+    if ($self->check_value($config_dev->{algorithm_use}, 'dot1dBasePortIfIndex')) {
+        $result = $self->session->get_table($oids{'BRIDGE-MIB::dot1dBasePortIfIndex'});
         unless (defined $result) {
-            $self->error("[Q-BRIDGE::dot1qTpFdbPort] Request error: ".$self->session->error);
+            $self->error("[BRIDGE-MIB::dot1dBasePortIfIndex] Request error: ".$self->session->error);
+            return;
+        }
+
+        %baseport_index = map {
+            my $port = $result->{$_};
+            s/.*\.(\d+)$/$1/;
+            $_ => $port
+        } keys %{$result};
+    }
+
+    # Таблица приведения индексов к портам
+    if ($config_dev->{algorithm} eq 'BRIDGE' ||
+        $self->check_value($config_dev->{algorithm_use}, 'dot1dBasePortIfIndex')) {
+
+        return unless defined $ports;
+        %port_index = map { $ports->{$_}->{ifIndex} => $_ } keys %{$ports};
+    }
+
+    # Получаем маки
+    if ($config_dev->{algorithm} eq 'BRIDGE' ||
+        $config_dev->{algorithm} eq 'Q-BRIDGE') {
+
+        my $oid = $config_dev->{algorithm} eq 'BRIDGE' ? 'BRIDGE-MIB::dot1dTpFdbPort' : 'Q-BRIDGE::dot1qTpFdbPort';
+
+        $result = $self->session->get_table($oids{$oid});
+        unless (defined $result) {
+            $self->error("[$oid] Request error: ".$self->session->error);
             return;
         }
         foreach (keys(%{$result})) {
             my $port = $result->{$_};
-            s/$oids{'Q-BRIDGE::dot1qTpFdbPort'}\.\d+\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)/sprintf("%02x%02x%02x%02x%02x%02x",$1,$2,$3,$4,$5,$6)/e;
+
+            # Магия привидения
+            $port = $baseport_index{$port} if exists $baseport_index{$port};
+            if (%port_index) {
+                if (exists $port_index{$port}) {
+                    $port = $port_index{$port};
+                } else {
+                    next;
+                }
+            }
+
+            s/\s+$//g;
+            s/.*\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)$/sprintf("%02x%02x%02x%02x%02x%02x",$1,$2,$3,$4,$5,$6)/e;
             push(@{$macs->{$port}}, $_);
         }
 
-    } elsif ($self->config->{snmp_devices}->{$dev_name}->{algorithm} eq 'BRIDGE') {
-
-        $result = $self->session->get_table($oids{'BRIDGE-MIB::dot1dTpFdbPort'});
-        unless (defined $result) {
-            $self->error("[BRIDGE-MIB::dot1dTpFdbPort] Request error: ".$self->session->error);
-            return;
-        }
-        foreach (keys(%{$result})) {
-            my $port = $result->{$_};
-            s/$oids{'BRIDGE-MIB::dot1dTpFdbPort'}\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)/sprintf("%02x%02x%02x%02x%02x%02x",$1,$2,$3,$4,$5,$6)/e;
-            push(@{$macs->{$port}}, $_);
-        }
-
-    } elsif ($self->config->{snmp_devices}->{$dev_name}->{algorithm} eq 'BRIDGE-COMM') {
+    } elsif ($config_dev->{algorithm} eq 'BRIDGE-COMM') {
 
         $result = $self->session->get_table($oids{'ENTITY-MIB::entLogicalCommunity'});
         unless (defined $result) {
@@ -339,15 +405,6 @@ sub macs {
 
     return $macs;
 }
-
-
-=head1 NAME
-
-Observer::Walker::SNMP
-
-=head1 DESCRIPTION
-
-Catalyst Model.
 
 =head1 AUTHOR
 

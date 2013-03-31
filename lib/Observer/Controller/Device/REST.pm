@@ -132,6 +132,7 @@ sub find_GET {
     $src_host = undef if $src_host eq '';
     $mac = $c->validate_input($c->req->param("findMAC"));       # for eq
     $mac =~ s/\'/\"/g if defined $mac;
+#FIXIT [0-9a-f][\s:.-][0-9a-f] => \d\d - потому что передаем в rlike а там может быть .*
     $mac =~ s/[\s:-]//g if defined $mac;
 
     unless (defined $src_host || defined $mac) {

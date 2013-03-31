@@ -13,3 +13,6 @@ observer.conf
 *.orig
 *.pid
 *.sql
+*.oid
+*.oids
+*.dump
