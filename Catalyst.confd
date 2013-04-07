@@ -1,0 +1,27 @@
+# /etc/conf.d/Catalyst:
+# Config file for /etc/init.d/Catalyst
+
+# List of projects to run. If APP_SERVERS is not set, script search projects
+# in CATALYST_PROJECT_DIR
+#APP_SERVERS=""
+
+# Specify type of executing scripts
+#CATALYST_RUN_SCRYPT="fastcgi"
+
+# Projects root dir
+#CATALYST_PROJECT_DIR="/var/www"
+
+# Location of unix sockets
+#CATALYST_SOCKET_DIR="/var/tmp"
+
+# Default pid file location
+#CATALYST_PID_DIR="/var/run"
+
+# Specify number of processes to keep to serve requests
+#CATALYST_PROCESSES="4"
+
+# Set TMPDIR for session caches
+#CATALYST_TMP_DIR="/var/tmp""
+
+# Set various fastcgi options here
+#CATALYST_FASTCGI_OPTS=""

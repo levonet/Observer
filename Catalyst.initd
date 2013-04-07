@@ -1,0 +1,100 @@
+#!/sbin/runscript
+# Copyright 2011-2013 Pavel Bashinsky
+# Distributed under the terms of the GNU General Public License v2
+
+CATALYST_RUN_SCRYPT=${CATALYST_RUN_SCRYPT:-fastcgi}
+CATALYST_PROJECT_DIR=${CATALYST_PROJECT_DIR:-/var/www}
+CATALYST_SOCKET_DIR=${CATALYST_SOCKET_DIR:-/var/tmp}
+CATALYST_PID_DIR=${CATALYST_PID_DIR:-/var/run}
+CATALYST_PROCESSES=${CATALYST_PROCESSES:-4}
+CATALYST_TMP_DIR=${CATALYST_TMP_DIR:-/var/tmp}
+
+app_servers=
+
+catalyst_app_servers() {
+	local proj_list="${CATALYST_PROJECT_DIR}/*"
+	local projdir= proj= app_script=
+
+	if [ -n "${APP_SERVERS}" ]; then
+		proj_list=""
+		for proj in ${APP_SERVERS}; do
+			if [ ! -d "${CATALYST_PROJECT_DIR}/${proj}" ]; then
+				einfo "Catalyst: Project ${BAD}${proj}${NORMAL} not found"
+				continue
+			fi
+			proj_list="${proj_list} ${CATALYST_PROJECT_DIR}/${proj}"
+		done
+	fi
+
+	for projdir in ${proj_list}; do
+		[ -d "${projdir}" ] || continue
+		proj="${projdir##*/}"
+		app_script="${projdir}/script/${proj,,}_${CATALYST_RUN_SCRYPT}.pl"
+		[ -x "${app_script}" ] || continue
+		app_servers="${app_servers} ${proj}"
+	done
+
+	[ -n "${app_servers}" ] && einfo "Starting Catalyst servers:${HILITE}${app_servers}${NORMAL}"
+}
+
+start_proj() {
+	local ret=0 curpwd=`pwd`
+
+	cd ${CATALYST_PROJECT_DIR}/$1
+	case "${CATALYST_RUN_SCRYPT}" in
+		fastcgi)
+			TMPDIR="${CATALYST_TMP_DIR}" \
+				./script/${1,,}_${CATALYST_RUN_SCRYPT}.pl -d \
+					-n ${CATALYST_PROCESSES} \
+					-l ${CATALYST_SOCKET_DIR}/c.$1.socket \
+					-p ${CATALYST_PID_DIR}/c.$1.pid \
+					${CATALYST_FASTCGI_OPTS} >/dev/null 2>&1
+			ret=$?
+			;;
+		*)
+			eerror "  unsupported scrypt server '${CATALYST_RUN_SCRYPT}'"
+			ret=1
+			;;
+	esac
+	cd ${curpwd}
+
+	return ${ret}
+}
+
+start() {
+	local ret=1 proj=
+
+	catalyst_app_servers
+
+	for proj in ${app_servers}; do
+		ebegin "  runing ${proj} as ${CATALYST_RUN_SCRYPT}"
+		start_proj ${proj}
+		eend $?
+		[ $? == 0 ] && ret=0
+	done
+
+	[ -z "${app_servers}" ] && ebegin "Catalyst: nothing to start" && eend 1
+
+	return ${ret}
+}
+
+stop() {
+	local status=1 projpid= proj=
+
+	einfo "Stopping Catalyst servers:"
+
+	for projpid in ${CATALYST_PID_DIR}/c.*.pid; do
+		[ -f "${projpid}" ] || continue
+		proj=${projpid##*/c.}
+		proj=${proj%%.pid}
+		ebegin "  stoping ${HILITE}${proj}${NORMAL}"
+		start-stop-daemon --stop --quiet --pidfile ${projpid}
+		eend $?
+		rm -f ${CATALYST_PID_DIR}/c.${proj}.socket
+		status=0
+	done
+
+	[ ${status} != 0 ] && ewarn "  nothing to stop."
+
+	return 0
+}
