@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<help>
+  <title xml:lang="en">Contents</title>
+  <title xml:lang="ru">Содержание</title>
+
+  <content xml:lang="en">
+    <div class="help_index">SNMP Configuration</div><br/>
+  </content>
+  <content xml:lang="ru">
+    <div class="help_index">Конфигурация SNMP</div><br/>
+  </content>
+
+</help>

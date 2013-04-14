@@ -31,6 +31,7 @@ span.statusError { color: red; }
 .icon16x16Refresh { background-image: url('/static/images/icons/16x16/sync.png'); }
 .icon16x16Report { background-image: url('/static/images/icons/16x16/report.png'); }
 .icon16x16Error { background-image: url('/static/images/icons/16x16/error.png'); }
+.icon16x16Help { background-image: url('/static/images/icons/16x16/help_book_3d.png'); }
 .icon16x16Exit { background-image: url('/static/images/icons/16x16/door_open.png'); }
 
 /* MVC section */

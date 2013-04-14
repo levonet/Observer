@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<help>
+  <title xml:lang="en">SNMP Configuration</title>
+  <title xml:lang="ru">Конфигурация SNMP</title>
+
+  <content xml:lang="en">
+    <p>The examples below shows how to configure SNMP for Observer.</p>
+  </content>
+  <content xml:lang="ru">
+    <p>Для взаимодействия с Observer на оборудовании требуется включить поддержку
+    SNMP. С целью сохранения безопасности, рекомендуется осталять включенным
+    только режим чтения. На текущий момент <em>Observer</em> поддерживает работу
+    с оборудованием по протоколу SNMP Version 2c.</p>
+    <p>Ниже собраны примеры включения SNMP-агентов на различных типах
+    оборудования.</p>
+  </content>
+
+  <constant><h3>Huawei Quidway S2000/S2300</h3></constant>
+  <code>
+snmp-agent community read &lt;secret&gt;
+snmp-agent sys-info version v2c
+  </code>
+
+  <constant><h3>D-Link DES-1228</h3></constant>
+  <code>
+delete snmp community public
+delete snmp community private
+create snmp community &lt;secret&gt; view CommunityView read_only
+  </code>
+
+  <constant><h3>D-Link DES-3200-28F</h3></constant>
+  <code>
+delete snmp community public
+delete snmp community private
+create snmp community &lt;secret&gt; view CommunityView read_only
+create snmp host &lt;area host ip&gt; v2c &lt;secret&gt;
+enable snmp
+  </code>
+
+  <constant><h3>Linksys SPS/SRW, <br/>Alcatel OmniStack LS 6200</h3></constant>
+  <code>
+snmp-server enable
+snmp-server community &lt;secret&gt; ro
+  </code>
+
+  <constant><h3>ZyXEL ES-2108-G</h3></constant>
+  <code>
+service-control snmp
+snmp-server get-community &lt;secret1&gt;
+snmp-server set-community &lt;secret2&gt;
+  </code>
+
+  <constant><h3>Cisco Catalyst</h3></constant>
+  <code><![CDATA[
+snmp-server community <secret> RO <acl num>
+access-list <acl num> permit <area host ip>
+]]></code>
+
+</help>

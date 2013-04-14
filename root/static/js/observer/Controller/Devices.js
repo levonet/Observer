@@ -24,6 +24,8 @@ define(["dojo/_base/declare",
 		selectedTabs: {}, // hash of tapbar ContentPanes by devId
 
 		_deviceAddTab: false,		/* flag */
+		_helpTab: false,
+		_helpContent: false,
 
 		_findDialog: null,		/* widget */
 		_findStore: null,
@@ -32,6 +34,7 @@ define(["dojo/_base/declare",
 		_handlerDeviceFindDlg: null,
 		_handlerDeviceAddTab: null,
 		_handlerViewMACs: null,
+		_handlerHelp: null,
 
 		constructor: function(args) {
 			declare.safeMixin(this, args);
@@ -121,6 +124,19 @@ define(["dojo/_base/declare",
 						observer.setSettings({'device/viewmac': val});
 					},
 					checked: observer.settings.get('device/viewmac', false),
+				}));
+				toolbar.addChild(new ToolbarSeparator({}));
+				toolbar.addChild(new Button({
+					id:	   "tbHelp",
+					iconClass: "icon16x16 icon16x16Help",
+					showLabel: false,
+					label:	   loc("Help"),
+					onClick:   function () {
+						if (!observer.device._handlerHelp) {
+							observer.device.trapHelp();
+						}
+						topic.publish("device/help");
+					},
 				}));
 			});
 		},
@@ -457,6 +473,60 @@ console.log("Device.trapSelectHost(new) = "+devId);
 					return false;
 				});
 			});
+		},
+
+		/* Help Tab */
+
+		isHelpTab: function() { return this._helpTab; },
+		setHelpTab: function(/*Bool*/state) { this._helpTab = state; },
+		
+		trapHelp: function() {
+
+			this._handlerDeviceAddTab = topic.subscribe("device/help", function() {
+
+				console.log("Device.openHelpTab()");
+				if (this.isHelpTab()) {
+					var cp = registry.byId("deviceHelpTab");
+					registry.byId("tabbar").selectChild(cp);
+					return;
+				}
+
+				this.setHelpTab(true);
+				console.log("Device.newHelpTab()");
+				require(["dijit/layout/ContentPane"], function(ContentPane) {
+					var tabbar = registry.byId("tabbar");
+					var cp = new ContentPane({
+						id:	"deviceHelpTab",
+						title:	loc("Help"),
+						closable: true,
+						style:	"overflow:auto;",
+						content: "<div id='deviceHelpView'></div>",
+						onShow: function() {
+							if (this._helpContent) {
+								return;
+							}
+							require(["dojo/_base/kernel",
+								"dojo/dom",
+								"dojo/html",
+								"observer/XSLTransform",
+							], function(dojo, dom, html, XSLTransform) {
+								var xslTransform = new XSLTransform("/static/xml/help.xsl", { locale: dojo.locale });
+								var outputText = xslTransform.transform("/static/xml/help/confsnmp.xml");
+								html.set(dom.byId("deviceHelpView"), outputText);
+								this._helpContent = true;
+							}.bind(this));
+						}.bind(this),
+						onClose: function() {
+							this.setHelpTab(false);
+							this._helpContent = false;
+							return true;
+						}.bind(this),
+					});
+					tabbar.addChild(cp);
+					tabbar.selectChild(cp);
+				}.bind(this));
+
+			}.bind(this));
 		},
 
 	});
