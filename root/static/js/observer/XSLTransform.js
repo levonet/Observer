@@ -58,7 +58,7 @@ define(["dojo/_base/declare",
 				xmlDoc.loadXML(xmlText);
 			} else if (window.DOMParser) {
 				parser = new DOMParser();
-				xmlDoc = parser.parseFromString(xmlText, "text/xml");
+				xmlDoc = parser.parseFromString(xmlText, "application/xml");
 			} else {
 				alert("Your browser doesn't suppoprt XML parsing!");
 			}
@@ -70,7 +70,7 @@ define(["dojo/_base/declare",
 		_loadXML : function(xmlPath) {
 			var xml = null;
 			xhr(xmlPath, {
-				handleAs : "xml",
+				handleAs : "application/xml",
 				sync: true
 			}).then(function (response) {
 				// Returns immediately, because the GET is synchronous.
