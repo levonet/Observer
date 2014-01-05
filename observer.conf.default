@@ -16,6 +16,19 @@ name Observer
     </connect_info>
 </Model::DB>
 
+<Model::ATAS>
+    <connect_info>
+        dsn             dbi:mysql:atas;host=atas-db.domain
+        user            *****
+        password        *****
+        <options>
+            quote_names         0
+            preserve_case       1
+            mysql_enable_utf8   1
+        </options>
+    </connect_info>
+</Model::ATAS>
+
 ################################################################################
 # Webserver settings
 #
