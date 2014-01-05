@@ -235,6 +235,13 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-12-11 10:48:59
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QsD6qz5WmjSzoDhFoFaV9Q
 
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+
+    $sqlt_table->add_index(name => 'idx_AreaHost_SrcHost', fields => ['AreaHost', 'SrcHost']);
+    $sqlt_table->add_index(name => 'idx_', fields => ['Status']);
+    $sqlt_table->add_index(name => 'idx_', fields => ['UpdTime']);
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

@@ -138,6 +138,11 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-11-24 12:43:50
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uuxuvou2lMouQGSRCP2c+Q
 
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+
+    $sqlt_table->add_index(name => 'idx_EvTime', fields => ['EvTime']);
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

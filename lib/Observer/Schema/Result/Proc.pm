@@ -155,6 +155,11 @@ __PACKAGE__->set_primary_key("AreaHost", "ProcId", "LoopId");
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-12-16 21:45:36
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2uagQTDqGBoa13vA/KvYBw
 
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+
+    $sqlt_table->add_index(name => 'idx_UpdTime', fields => ['UpdTime']);
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

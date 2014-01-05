@@ -201,6 +201,14 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-11-26 16:43:38
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BjACqTFjE1yi5GzJb6Qdbg
 
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+
+    $sqlt_table->add_index(name => 'idx_DevId_IfIndex', fields => ['DevId', 'IfIndex']);
+    $sqlt_table->add_index(name => 'idx_IfType', fields => ['IfType']);
+    $sqlt_table->add_index(name => 'idx_UpdTime', fields => ['UpdTime']);
+}
+
 my %status_vals = (
     ADMIN_MASK      => 0x0003, # Статус порта, административный
     OPER_MASK       => 0x001c, # Статус порта, текущий
