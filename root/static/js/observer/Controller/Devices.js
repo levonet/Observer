@@ -364,53 +364,62 @@ console.log("Device.trapSelectHost(new) = "+devId);
 			require(["dojo/domReady!"], function () {
 				console.log("onLoadViewPorts("+devId+")");
 				if (registry.byId("tbViewMACs").get("checked")) {
-					observer.device.showViewMACs(devId);
+					this.showViewMACs(devId);
 				}
-			});
+			}.bind(this));
 		},
 
 		trapViewMACs: function() {
 			this._handlerViewMACs = topic.subscribe("device/viewmac", function(val) { //TODO: а нужен ли publish?
-				if (val && observer.device.currentDevId >= 0) {
+				if (val && this.currentDevId >= 0) {
 					// Если MAC-и уже показаны, просто обновляем информацию
-					observer.device.showViewMACs(observer.device.currentDevId);
+					this.showViewMACs(this.currentDevId);
 				}
-			});
+			}.bind(this));
+		},
+
+		formatMAC: function(mac) {
+			if (mac.service) {
+				return "<span class='service' title='" + mac.mac + "'>" + mac.service + "</span>";
+			} else {
+				return "<span class='mac" + (mac.online>0?" online":"")
+					+ "' title=\"" + mac.updtime + "\">" + mac.mac + "</span>";
+			}
 		},
 
 		showViewMACs: function(devId) {
+console.log("WARM0");
+console.log(this);
 			require(["dojo/dom", "dojo/dom-attr"], function (dom, domAttr) {
 				dom.byId("vpMACsTitle"+devId).innerHTML = domAttr.get("vpMACsTitle"+devId, "title");
-				observer.device.statusMsg('Info', loc("Request for MACs ..."));
+				this.statusMsg('Info', loc("Request for MACs ..."));
 				require(["dojo/request"], function(request) {
-					request(observer.device.urlViewMACs.replace(/_DEVID_/, devId), {
+console.log("WARM1");
+console.log(this);
+					request(this.urlViewMACs.replace(/_DEVID_/, devId), {
 						handleAs: "json",
 						headers: { 'Content-Type': 'application/json' },
 					}).then(function(data) {
-						console.log(data);
+console.log(data);
+console.log("WARM2");
+console.log(this);
 						for (var port in data.macs) {
 							if (data.macs.hasOwnProperty(port)) {
 								var ret = [];
 								var services = {};
 								for (var i=0; i< data.macs[port].length; i++) {
-									var hash = data.macs[port][i];
-									if (hash.service) {
-										ret.push("<span class='service' title='" + hash.mac + "'>" + hash.service + "</span>");
-									} else {
-										ret.push("<span class='mac" + (hash.online>0?" online":"")
-											+ "' title=\"" + hash.updtime + "\">" + hash.mac + "</span>");
-									}
+									ret.push(this.formatMAC(data.macs[port][i]));
 								}
 								dom.byId("vpMACs"+devId+"_"+port).innerHTML = ret.join(", ");
 							}
 						}
-						observer.device.statusMsg('Info', loc("ok"));
-					}, function(error) {
+						this.statusMsg('Info', loc("ok"));
+					}.bind(this), function(error) {
 						console.log("error:", error);
-						observer.device.statusMsg('Error', error);
-					});
-				});
-			});
+						this.statusMsg('Error', error);
+					}.bind(this));
+				}.bind(this));
+			}.bind(this));
 		},
 
 		/* View Edit */
