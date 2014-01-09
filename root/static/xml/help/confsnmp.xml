@@ -4,11 +4,12 @@
   <title xml:lang="ru">Конфигурация SNMP</title>
 
   <content xml:lang="en">
-    <p>The examples below shows how to configure SNMP for Observer.</p>
+    <p>The examples below shows how to configure SNMP for Observer.
+    For safety reasons it is recommended to leave only read-only mode.</p>
   </content>
   <content xml:lang="ru">
-    <p>Для взаимодействия с Observer на оборудовании требуется включить поддержку
-    SNMP. С целью сохранения безопасности, рекомендуется оставить включенным
+    <p>Для работы Observer на оборудовании нужно включить поддержку SNMP.
+    С целью сохранения безопасности, рекомендуется оставить включенным
     только режим чтения. На текущий момент <em>Observer</em> поддерживает работу
     с оборудованием по протоколу SNMP Version 2c.</p>
     <p>Ниже собраны примеры включения SNMP-агентов на различных типах
